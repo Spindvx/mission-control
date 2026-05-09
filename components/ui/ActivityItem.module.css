@@ -1,0 +1,115 @@
+.item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background 150ms var(--ease-out);
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item:hover {
+  background: var(--bg-elevated);
+  margin: 0 -12px;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.time {
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-tertiary);
+  min-width: 70px;
+  padding-top: 2px;
+}
+
+.iconWrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconWrap.tool_run {
+  background: rgba(79, 124, 247, 0.15);
+  color: var(--accent-blue);
+}
+
+.iconWrap.system {
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--accent-cyan);
+}
+
+.iconWrap.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--accent-red);
+}
+
+.iconWrap.deploy {
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--accent-violet);
+}
+
+.iconWrap.schedule {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-amber);
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.message {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.metaTag {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-tertiary);
+  background: var(--bg-elevated);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.status.success { background: var(--accent-green); }
+.status.error { background: var(--accent-red); }
+.status.warning { background: var(--accent-amber); }
+.status.info { background: var(--accent-cyan); }
+
+.new {
+  animation: highlight 2s ease-out;
+}
+
+@keyframes highlight {
+  from { background: rgba(79, 124, 247, 0.2); }
+  to { background: transparent; }
+}

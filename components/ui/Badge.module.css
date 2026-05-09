@@ -1,0 +1,68 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Status variants */
+.active {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--accent-green);
+}
+
+.idle {
+  background: rgba(152, 152, 160, 0.15);
+  color: var(--text-secondary);
+}
+
+.running {
+  background: rgba(79, 124, 247, 0.15);
+  color: var(--accent-blue);
+}
+
+.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--accent-red);
+}
+
+/* Type variants */
+.info {
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--accent-cyan);
+}
+
+.warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-amber);
+}
+
+.success {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--accent-green);
+}
+
+/* Generic */
+.default {
+  background: var(--bg-overlay);
+  color: var(--text-secondary);
+}
+
+/* Size small */
+.sm {
+  font-size: 10px;
+  padding: 1px 6px;
+}
+
+/* Dot indicator */
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
