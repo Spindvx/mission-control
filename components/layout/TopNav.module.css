@@ -10,7 +10,23 @@
   align-items: center;
   padding: 0 16px;
   z-index: 100;
-  gap: 16px;
+  gap: 12px;
+}
+
+.menuBtn {
+  display: none;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  transition: all 150ms var(--ease-out);
+}
+
+.menuBtn:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 
 .brand {

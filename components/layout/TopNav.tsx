@@ -1,12 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { Activity, Bell, Search, Zap } from 'lucide-react';
+import { Activity, Bell, Search, Zap, Menu } from 'lucide-react';
 import styles from './TopNav.module.css';
 
-export default function TopNav() {
+interface TopNavProps {
+  onMenuClick: () => void;
+}
+
+export default function TopNav({ onMenuClick }: TopNavProps) {
   return (
     <nav className={styles.nav}>
+      <button className={styles.menuBtn} onClick={onMenuClick} title="Toggle sidebar">
+        <Menu size={18} />
+      </button>
+
       <Link href="/" className={styles.brand}>
         <div className={styles.logoMark}>
           <Zap />
