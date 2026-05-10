@@ -1,156 +1,86 @@
 'use client';
 
-import Shell from '@/components/layout/Shell';
+import { Activity, Server, Plus, FileText, Search, Wrench } from 'lucide-react';
+import StatCard from '@/components/ui/StatCard';
+import ActivityItem from '@/components/ui/ActivityItem';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import { mockStats, mockActivity, mockServices } from '@/lib/data';
+import styles from './page.module.css';
 
-export default function Home() {
+export default function OverviewPage() {
   return (
-    <Shell>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '16px',
-        marginBottom: '32px',
-      }}>
-        {[
-          { label: 'Active Tools', value: '4', delta: 1, deltaLabel: 'from yesterday' },
-          { label: 'Events Today', value: '847', delta: 12, deltaLabel: '% vs yesterday' },
-          { label: 'Uptime', value: '99.8%', delta: 0.1, deltaLabel: '% vs last week' },
-          { label: 'Avg Response', value: '42ms', delta: -8, deltaLabel: '% vs yesterday' },
-        ].map((stat, i) => (
-          <div key={i} style={{
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: '8px',
-            padding: '20px',
-          }}>
-            <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8, fontWeight: 500 }}>
-              {stat.label}
-            </div>
-            <div style={{ fontSize: 28, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '-0.02em' }}>
-              {stat.value}
-            </div>
-            <div style={{ fontSize: 12, color: 'var(--text-tertiary)', marginTop: 8 }}>
-              {stat.delta > 0 ? '+' : ''}{stat.delta}{stat.deltaLabel}
-            </div>
-          </div>
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Overview</h1>
+        <p className={styles.subtitle}>Mission Control — all systems nominal</p>
+      </div>
+
+      <div className={styles.statsGrid}>
+        {mockStats.map((stat, i) => (
+          <StatCard key={i} {...stat} />
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-        <div style={{
-          background: 'var(--bg-surface)',
-          border: '1px solid var(--border-subtle)',
-          borderRadius: '8px',
-          padding: '20px',
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: '16px',
-          }}>
-            <span style={{ fontSize: 13, fontWeight: 600 }}>Recent Activity</span>
+      <div className={styles.grid}>
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardTitle}>
+              <Activity size={16} className={styles.cardIcon} />
+              Recent Activity
+            </span>
+            <Button variant="ghost" size="sm">View all</Button>
           </div>
-          {[
-            { time: '10:44', type: 'tool_run', msg: 'Trading Bot Monitor executed trade signal: BUY QQQ', status: 'success' },
-            { time: '10:40', type: 'system', msg: 'System health check passed — all services nominal', status: 'info' },
-            { time: '10:32', type: 'tool_run', msg: 'SSH Deployer deployed v2.4.1 to prod-server-01', status: 'success' },
-            { time: '09:15', type: 'error', msg: 'Media Scanner failed to connect to Zima OS', status: 'error' },
-            { time: '09:00', type: 'tool_run', msg: 'Log Aggregator completed index rebuild', status: 'success' },
-          ].map((event, i) => (
-            <div key={i} style={{
-              display: 'flex',
-              gap: '12px',
-              padding: '12px 0',
-              borderBottom: i < 4 ? '1px solid var(--border-subtle)' : 'none',
-            }}>
-              <span style={{ fontSize: 12, fontFamily: "'JetBrains Mono', monospace", color: 'var(--text-tertiary)', minWidth: 50 }}>
-                {event.time}
-              </span>
-              <div style={{
-                width: 28,
-                height: 28,
-                borderRadius: 6,
-                background: event.type === 'tool_run' ? 'rgba(79, 124, 247, 0.15)' :
-                          event.type === 'system' ? 'rgba(6, 182, 212, 0.15)' :
-                          'rgba(239, 68, 68, 0.15)',
-                color: event.type === 'tool_run' ? 'var(--accent-blue)' :
-                       event.type === 'system' ? 'var(--accent-cyan)' :
-                       'var(--accent-red)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 14,
-              }}>
-                {event.type === 'tool_run' ? '▶' : event.type === 'system' ? '⚙' : '✕'}
-              </div>
-              <div style={{ flex: 1, fontSize: 13, color: 'var(--text-primary)' }}>
-                {event.msg}
-              </div>
-              <div style={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                background: event.status === 'success' ? 'var(--accent-green)' :
-                           event.status === 'error' ? 'var(--accent-red)' :
-                           'var(--accent-cyan)',
-                marginTop: 4,
-              }} />
-            </div>
-          ))}
+          <div className={styles.activityList}>
+            {mockActivity.slice(0, 5).map((event, i) => (
+              <ActivityItem key={event.id} event={event} isNew={i === 0} />
+            ))}
+          </div>
         </div>
 
-        <div style={{
-          background: 'var(--bg-surface)',
-          border: '1px solid var(--border-subtle)',
-          borderRadius: '8px',
-          padding: '20px',
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: '16px',
-          }}>
-            <span style={{ fontSize: 13, fontWeight: 600 }}>System Status</span>
-            <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>Updated just now</span>
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardTitle}>
+              <Server size={16} className={styles.cardIcon} />
+              System Status
+            </span>
+            <span className={styles.updateTime}>Updated just now</span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
-            {[
-              { name: 'Zima OS', status: 'online', latency: 24 },
-              { name: 'ARR Stack', status: 'online', latency: 18 },
-              { name: 'Trading Bot', status: 'online', latency: 12 },
-              { name: 'OpenClaw Gateway', status: 'online', latency: 8 },
-              { name: 'Vercel Edge', status: 'degraded', latency: 145 },
-            ].map((service) => (
-              <div key={service.name} style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '12px',
-                background: 'var(--bg-elevated)',
-                borderRadius: 6,
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: '50%',
-                    background: service.status === 'online' ? 'var(--accent-green)' :
-                               service.status === 'degraded' ? 'var(--accent-amber)' :
-                               'var(--accent-red)',
-                    boxShadow: service.status === 'online' ? '0 0 6px var(--accent-green)' : 'none',
-                  }} />
-                  <span style={{ fontSize: 13, fontWeight: 500 }}>{service.name}</span>
+          <div className={styles.servicesGrid}>
+            {mockServices.map((service) => (
+              <div key={service.name} className={styles.serviceItem}>
+                <div className={styles.serviceInfo}>
+                  <div className={`${styles.serviceDot} ${styles[service.status]}`} />
+                  <span className={styles.serviceName}>{service.name}</span>
                 </div>
-                <span style={{ fontSize: 12, fontFamily: "'JetBrains Mono', monospace", color: 'var(--text-tertiary)' }}>
-                  {service.latency}ms
-                </span>
+                {service.latency !== undefined && (
+                  <span className={styles.serviceLatency}>{service.latency}ms</span>
+                )}
               </div>
             ))}
           </div>
         </div>
+
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardTitle}>Quick Actions</span>
+          </div>
+          <div className={styles.actionsRow}>
+            <button className={styles.quickAction}>
+              <Plus size={16} className={styles.quickActionIcon} />
+              New Tool
+            </button>
+            <button className={styles.quickAction}>
+              <FileText size={16} className={styles.quickActionIcon} />
+              View Logs
+            </button>
+            <button className={styles.quickAction}>
+              <Search size={16} className={styles.quickActionIcon} />
+              System Check
+            </button>
+          </div>
+        </div>
       </div>
-    </Shell>
+    </div>
   );
 }
