@@ -31,17 +31,17 @@
         "tz": null
       },
       "enabled": true,
-      "nextRun": "2026-05-10T15:00:00.000Z",
-      "nextRunRelative": "in 0m",
-      "lastRun": "2026-05-09T15:00:00.003Z",
-      "lastRunRelative": "1d ago",
+      "nextRun": "2026-05-11T15:00:00.000Z",
+      "nextRunRelative": "in 23h",
+      "lastRun": "2026-05-10T15:00:00.005Z",
+      "lastRunRelative": "1m ago",
       "lastRunStatus": "ok",
       "lastStatus": "ok",
-      "lastDurationMs": 4642,
+      "lastDurationMs": 856,
       "consecutiveErrors": 0,
       "sessionTarget": "isolated",
       "deliveryMode": "none"
     }
   ],
-  "lastUpdated": "2026-05-10T14:59:07.406Z"
+  "lastUpdated": "2026-05-10T15:00:07.416Z"
 }
