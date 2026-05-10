@@ -10,13 +10,13 @@
         "tz": "Pacific/Auckland"
       },
       "enabled": true,
-      "nextRun": "2026-05-10T18:30:00.000Z",
-      "nextRunRelative": "4m ago",
-      "lastRun": "2026-05-09T18:30:00.003Z",
-      "lastRunRelative": "2d ago",
+      "nextRun": "2026-05-11T18:30:00.000Z",
+      "nextRunRelative": "in 23h",
+      "lastRun": "2026-05-10T18:30:00.005Z",
+      "lastRunRelative": "4m ago",
       "lastRunStatus": "ok",
       "lastStatus": "ok",
-      "lastDurationMs": 290913,
+      "lastDurationMs": 206848,
       "consecutiveErrors": 0,
       "sessionTarget": "isolated",
       "deliveryMode": "announce"
@@ -43,5 +43,5 @@
       "deliveryMode": "none"
     }
   ],
-  "lastUpdated": "2026-05-10T18:33:08.982Z"
+  "lastUpdated": "2026-05-10T18:33:38.982Z"
 }
