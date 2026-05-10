@@ -4,13 +4,14 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/node /home/spindux/mission-control/sync-cron-state.js
+ExecStart=/home/linuxbrew/.linuxbrew/bin/node /home/spindux/mission-control/sync-cron-state.js
 Restart=always
 RestartSec=10
 User=spindux
 
-# Environment variables
+# Environment
 Environment=HOME=/home/spindux
+Environment=PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/spindux/.local/bin
 Environment=NODE_ENV=production
 
 # Logging
