@@ -1,0 +1,7 @@
+fatal: not a git repository (or any of the parent directories): .git
+[Sync] Error: Command failed: git rev-parse HEAD
+fatal: not a git repository (or any of the parent directories): .git
+
+[Sync] Git error: Command failed: git push origin master
+gh auth git-credential get: 1: gh: not found
+fatal: could not
