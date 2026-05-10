@@ -2,16 +2,15 @@
 /**
  * Mission Control Live Cron Sync
  * 
- * Runs on your local Ubuntu machine, posts cron state to Vercel every 30s.
- * This keeps your Mission Control Calendar page showing real-time OpenClaw cron data.
+ * Posts cron state to GitHub repo as cron-state.json.
+ * Site fetches from: https://raw.githubusercontent.com/Spindvx/mission-control/main/cron-state.json
  * 
- * Usage: node sync-cron-state.js
- * Runs continuously, posts every 30 seconds.
+ * Runs every 30s, keeps your Calendar page showing real OpenClaw state.
  */
 
-const VERCEL_SYNC_URL = 'https://mission-control-spindvx.vercel.app/api/cron-sync';
-const SYNC_SECRET = 'mc-sync-2026-josh-sable';
-const POLL_INTERVAL = 30000; // 30 seconds
+const GITHUB_REPO = 'Spindvx/mission-control';
+const CRON_STATE_FILE = 'cron-state.json';
+const POLL_INTERVAL = 30000;
 
 const CRON_JOBS_PATH = `${process.env.HOME}/.openclaw/cron/jobs.json`;
 const CRON_STATE_PATH = `${process.env.HOME}/.openclaw/cron/jobs-state.json`;
@@ -19,8 +18,7 @@ const CRON_STATE_PATH = `${process.env.HOME}/.openclaw/cron/jobs-state.json`;
 async function readJson(path) {
   const fs = await import('fs/promises');
   try {
-    const content = await fs.readFile(path, 'utf-8');
-    return JSON.parse(content);
+    return JSON.parse(await fs.readFile(path, 'utf-8'));
   } catch {
     return null;
   }
@@ -40,7 +38,6 @@ function getRelativeTime(dateMs) {
     if (absHours < 24) return `${absHours}h ago`;
     return `${Math.abs(diffDays)}d ago`;
   }
-  
   if (diffMins < 60) return `in ${diffMins}m`;
   if (diffHours < 24) return `in ${diffHours}h`;
   return `in ${diffDays}d`;
@@ -57,17 +54,12 @@ async function fetchCronData() {
   const jobsData = await readJson(CRON_JOBS_PATH);
   const stateData = await readJson(CRON_STATE_PATH);
   
-  if (!jobsData?.jobs) {
-    console.error('[Sync] No cron jobs found at', CRON_JOBS_PATH);
-    return [];
-  }
+  if (!jobsData?.jobs) return [];
 
-  const crons = jobsData.jobs.map(job => {
-    const jobState = stateData?.jobs?.[job.id];
-    const nextRunMs = jobState?.state?.nextRunAtMs;
-    const lastRunMs = jobState?.state?.lastRunAtMs;
-    const nextRun = nextRunMs ? new Date(nextRunMs) : null;
-    const lastRun = lastRunMs ? new Date(lastRunMs) : null;
+  return jobsData.jobs.map(job => {
+    const state = stateData?.jobs?.[job.id];
+    const nextRunMs = state?.state?.nextRunAtMs;
+    const lastRunMs = state?.state?.lastRunAtMs;
 
     return {
       id: job.id,
@@ -79,50 +71,80 @@ async function fetchCronData() {
         tz: job.schedule?.tz || null,
       },
       enabled: job.enabled !== false,
-      nextRun: nextRun?.toISOString() || null,
-      nextRunRelative: nextRun ? getRelativeTime(nextRunMs) : null,
-      lastRun: lastRun?.toISOString() || null,
-      lastRunRelative: lastRun ? getRelativeTime(lastRunMs) : null,
-      lastRunStatus: jobState?.state?.lastRunStatus || null,
-      lastStatus: jobState?.state?.lastStatus || null,
-      lastDurationMs: jobState?.state?.lastDurationMs || null,
-      consecutiveErrors: jobState?.state?.consecutiveErrors || 0,
+      nextRun: nextRunMs ? new Date(nextRunMs).toISOString() : null,
+      nextRunRelative: nextRunMs ? getRelativeTime(nextRunMs) : null,
+      lastRun: lastRunMs ? new Date(lastRunMs).toISOString() : null,
+      lastRunRelative: lastRunMs ? getRelativeTime(lastRunMs) : null,
+      lastRunStatus: state?.state?.lastRunStatus || null,
+      lastStatus: state?.state?.lastStatus || null,
+      lastDurationMs: state?.state?.lastDurationMs || null,
+      consecutiveErrors: state?.state?.consecutiveErrors || 0,
       sessionTarget: job.sessionTarget || null,
       deliveryMode: job.delivery?.mode || null,
     };
   });
-
-  return crons;
 }
+
+async function pushCronState(crons) {
+  const { execSync } = await import('child_process');
+  const content = JSON.stringify({ crons, lastUpdated: new Date().toISOString() }, null, 2);
+  
+  // Get the commit SHA of main
+  const sha = execSync('git rev-parse HEAD', { encoding: 'utf8', cwd: process.cwd() }).trim();
+  
+  // Create blob and update file
+  const encoded = Buffer.from(content).toString('base64');
+  
+  const gitCommands = `
+git checkout main 2>/dev/null || git checkout master
+echo '${content.replace(/'/g, "'\\''")}' > ${CRON_STATE_FILE}
+git add ${CRON_STATE_FILE}
+git commit -m "Update cron state $(date -Iseconds)" --allow-empty
+git push origin main
+  `.trim();
+
+  try {
+    execSync(gitCommands, { 
+      cwd: '/home/spindux/mission-control', 
+      stdio: 'pipe',
+      timeout: 15000 
+    });
+    return true;
+  } catch (e) {
+    // If push fails, try git fetch and retry
+    try {
+      execSync('git fetch origin main', { cwd: '/home/spindux/mission-control', stdio: 'pipe', timeout: 5000 });
+      execSync(gitCommands, { cwd: '/home/spindux/mission-control', stdio: 'pipe', timeout: 15000 });
+      return true;
+    } catch (e2) {
+      console.error('[Sync] Push failed:', e2.message.substring(0, 100));
+      return false;
+    }
+  }
+}
+
+let lastCronState = '';
 
 async function sync() {
   try {
     const crons = await fetchCronData();
+    const stateStr = JSON.stringify(crons);
     
-    const response = await fetch(VERCEL_SYNC_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SYNC_SECRET}`,
-      },
-      body: JSON.stringify({ crons }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`[Sync] Failed: ${response.status} - ${errorText}`);
-      return;
+    // Only push if state changed
+    if (stateStr === lastCronState) {
+      return; // No change, skip
     }
-
-    const result = await response.json();
-    const timestamp = new Date().toLocaleTimeString('en-NZ', { 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      second: '2-digit' 
+    lastCronState = stateStr;
+    
+    const pushed = await pushCronState(crons);
+    
+    const ts = new Date().toLocaleTimeString('en-NZ', { 
+      hour: '2-digit', minute: '2-digit', second: '2-digit' 
     });
     
-    console.log(`[${timestamp}] Synced ${result.received} cron jobs to Mission Control`);
-    
+    if (pushed) {
+      console.log(`[${ts}] ✓ Synced ${crons.length} cron jobs to GitHub`);
+    }
   } catch (error) {
     console.error('[Sync] Error:', error.message);
   }
@@ -130,14 +152,10 @@ async function sync() {
 
 async function main() {
   console.log('🚀 Mission Control Live Cron Sync');
-  console.log('   Polling OpenClaw cron state every 30s...');
-  console.log('   Target: Mission Control Calendar');
+  console.log('   Polling OpenClaw every 30s, pushing state to GitHub...');
   console.log('');
   
-  // Initial sync
   await sync();
-  
-  // Then poll every 30 seconds
   setInterval(sync, POLL_INTERVAL);
 }
 

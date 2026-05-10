@@ -1,51 +1,48 @@
 import { NextResponse } from 'next/server';
 
-const CRON_SYNC_SECRET = process.env.CRON_SYNC_SECRET || 'mc-sync-2026-josh-sable';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-// In-memory store for the live cron state synced from local machine
-let cronState: {
-  crons: any[];
-  lastUpdated: string | null;
-} = {
-  crons: [],
-  lastUpdated: null,
-};
+const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/Spindvx/mission-control/main/cron-state.json';
 
 export async function GET() {
-  return NextResponse.json({
-    crons: cronState.crons,
-    lastUpdated: cronState.lastUpdated,
-    source: cronState.lastUpdated ? 'live-sync' : 'static',
-    fetchedAt: new Date().toISOString(),
-  });
-}
-
-export async function POST(request: Request) {
   try {
-    const authHeader = request.headers.get('authorization');
-    const secret = authHeader?.replace('Bearer ', '');
-    
-    if (secret !== CRON_SYNC_SECRET) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const body = await request.json();
-    
-    if (!body.crons || !Array.isArray(body.crons)) {
-      return NextResponse.json({ error: 'Invalid payload: expected { crons: [...] }' }, { status: 400 });
-    }
-
-    cronState = {
-      crons: body.crons,
-      lastUpdated: new Date().toISOString(),
-    };
-
-    return NextResponse.json({ 
-      success: true, 
-      received: body.crons.length,
-      lastUpdated: cronState.lastUpdated,
+    const res = await fetch(GITHUB_RAW_URL, {
+      cache: 'no-store',
+      headers: {
+        'Accept': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+      },
     });
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        // No cron state pushed yet
+        return NextResponse.json({
+          crons: [],
+          lastUpdated: null,
+          source: 'github',
+          message: 'No cron state synced yet. Run sync-cron-state.js locally.',
+        });
+      }
+      throw new Error(`GitHub returned ${res.status}`);
+    }
+
+    const data = await res.json();
+    
+    return NextResponse.json({
+      crons: data.crons || [],
+      lastUpdated: data.lastUpdated || null,
+      source: 'github',
+    });
+
   } catch (error) {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    // Fallback: return empty state with helpful message
+    return NextResponse.json({
+      crons: [],
+      lastUpdated: null,
+      source: 'error',
+      error: 'Could not fetch from GitHub',
+    });
   }
 }
