@@ -11,7 +11,7 @@
       },
       "enabled": true,
       "nextRun": "2026-05-10T18:30:00.000Z",
-      "nextRunRelative": "in 34m",
+      "nextRunRelative": "in 33m",
       "lastRun": "2026-05-09T18:30:00.003Z",
       "lastRunRelative": "1d ago",
       "lastRunStatus": "ok",
@@ -43,5 +43,5 @@
       "deliveryMode": "none"
     }
   ],
-  "lastUpdated": "2026-05-10T17:55:08.710Z"
+  "lastUpdated": "2026-05-10T17:56:08.717Z"
 }
