@@ -11,9 +11,9 @@
       },
       "enabled": true,
       "nextRun": "2026-05-10T18:30:00.000Z",
-      "nextRunRelative": "in 3h",
+      "nextRunRelative": "in 2h",
       "lastRun": "2026-05-09T18:30:00.003Z",
-      "lastRunRelative": "21h ago",
+      "lastRunRelative": "22h ago",
       "lastRunStatus": "ok",
       "lastStatus": "ok",
       "lastDurationMs": 290913,
@@ -34,7 +34,7 @@
       "nextRun": "2026-05-11T15:00:00.000Z",
       "nextRunRelative": "in 23h",
       "lastRun": "2026-05-10T15:00:00.005Z",
-      "lastRunRelative": "30m ago",
+      "lastRunRelative": "31m ago",
       "lastRunStatus": "ok",
       "lastStatus": "ok",
       "lastDurationMs": 856,
@@ -43,5 +43,5 @@
       "deliveryMode": "none"
     }
   ],
-  "lastUpdated": "2026-05-10T15:29:07.630Z"
+  "lastUpdated": "2026-05-10T15:30:07.639Z"
 }
