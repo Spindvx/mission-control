@@ -2,3 +2,5 @@ node_modules/
 node_modules/
 .next/
 .vercel
+sync.log
+sync-error.log
