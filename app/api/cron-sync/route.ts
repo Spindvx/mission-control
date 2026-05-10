@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const CRON_SYNC_SECRET = process.env.CRON_SYNC_SECRET || 'mc-sync-2026-josh-sable';
-
-// In-memory store for the live cron state synced from local machine
+// In-memory store (resets on cold start, but it's free and simple)
+// For production, you'd use Vercel KV or Redis
 let cronState: {
   crons: any[];
   lastUpdated: string | null;
@@ -11,12 +10,14 @@ let cronState: {
   lastUpdated: null,
 };
 
+// Simple secret to authenticate local sync script
+const SYNC_SECRET = process.env.CRON_SYNC_SECRET || 'mission-control-sync-secret-2026';
+
 export async function GET() {
   return NextResponse.json({
     crons: cronState.crons,
     lastUpdated: cronState.lastUpdated,
-    source: cronState.lastUpdated ? 'live-sync' : 'static',
-    fetchedAt: new Date().toISOString(),
+    source: 'live-sync',
   });
 }
 
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
     const authHeader = request.headers.get('authorization');
     const secret = authHeader?.replace('Bearer ', '');
     
-    if (secret !== CRON_SYNC_SECRET) {
+    if (secret !== SYNC_SECRET) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

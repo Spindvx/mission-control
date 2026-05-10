@@ -1,0 +1,21 @@
+[Unit]
+Description=Mission Control Cron State Sync
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/node /home/spindux/mission-control/sync-cron-state.js
+Restart=always
+RestartSec=10
+User=spindux
+
+# Environment variables
+Environment=HOME=/home/spindux
+Environment=NODE_ENV=production
+
+# Logging
+StandardOutput=append:/home/spindux/mission-control/sync.log
+StandardError=append:/home/spindux/mission-control/sync-error.log
+
+[Install]
+WantedBy=default.target
