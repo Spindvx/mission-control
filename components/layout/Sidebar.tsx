@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Grid, Wrench, Zap, Settings, CheckSquare } from 'lucide-react';
+import { Grid, Wrench, Zap, Settings, CheckSquare, Calendar } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 const navItems = [
   { label: 'Overview', href: '/', icon: Grid },
   { label: 'Tasks', href: '/tasks', icon: CheckSquare },
+  { label: 'Calendar', href: '/calendar', icon: Calendar },
   { label: 'Tools', href: '/tools', icon: Wrench, badge: 6 },
   { label: 'Activity', href: '/activity', icon: Zap, badge: 3 },
 ];
