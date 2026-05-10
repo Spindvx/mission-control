@@ -3,7 +3,7 @@
  * Mission Control Live Cron Sync
  * 
  * Posts cron state to GitHub repo as cron-state.json.
- * Site fetches from: https://raw.githubusercontent.com/Spindvx/mission-control/main/cron-state.json
+ * Site fetches from: https://raw.githubusercontent.com/Spindvx/mission-control/master/cron-state.json
  * 
  * Runs every 30s, keeps your Calendar page showing real OpenClaw state.
  */
@@ -89,18 +89,18 @@ async function pushCronState(crons) {
   const { execSync } = await import('child_process');
   const content = JSON.stringify({ crons, lastUpdated: new Date().toISOString() }, null, 2);
   
-  // Get the commit SHA of main
+  // Get the commit SHA of master
   const sha = execSync('git rev-parse HEAD', { encoding: 'utf8', cwd: process.cwd() }).trim();
   
   // Create blob and update file
   const encoded = Buffer.from(content).toString('base64');
   
   const gitCommands = `
-git checkout main 2>/dev/null || git checkout master
+git checkout master 2>/dev/null || git checkout master
 echo '${content.replace(/'/g, "'\\''")}' > ${CRON_STATE_FILE}
 git add ${CRON_STATE_FILE}
 git commit -m "Update cron state $(date -Iseconds)" --allow-empty
-git push origin main
+git push origin master || git push origin master
   `.trim();
 
   try {
@@ -113,7 +113,7 @@ git push origin main
   } catch (e) {
     // If push fails, try git fetch and retry
     try {
-      execSync('git fetch origin main', { cwd: '/home/spindux/mission-control', stdio: 'pipe', timeout: 5000 });
+      execSync('git fetch origin master', { cwd: '/home/spindux/mission-control', stdio: 'pipe', timeout: 5000 });
       execSync(gitCommands, { cwd: '/home/spindux/mission-control', stdio: 'pipe', timeout: 15000 });
       return true;
     } catch (e2) {
@@ -150,7 +150,7 @@ async function sync() {
   }
 }
 
-async function main() {
+async function master() {
   console.log('🚀 Mission Control Live Cron Sync');
   console.log('   Polling OpenClaw every 30s, pushing state to GitHub...');
   console.log('');
@@ -159,4 +159,4 @@ async function main() {
   setInterval(sync, POLL_INTERVAL);
 }
 
-main().catch(console.error);
+master().catch(console.error);

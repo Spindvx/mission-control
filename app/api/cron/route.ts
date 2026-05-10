@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/Spindvx/mission-control/main/cron-state.json';
+const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/Spindvx/mission-control/master/cron-state.json';
 
 export async function GET() {
   try {
