@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Grid, Wrench, Zap, Settings, ChevronRight } from 'lucide-react';
+import { Grid, Wrench, Zap, Settings, CheckSquare } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 const navItems = [
   { label: 'Overview', href: '/', icon: Grid },
+  { label: 'Tasks', href: '/tasks', icon: CheckSquare },
   { label: 'Tools', href: '/tools', icon: Wrench, badge: 6 },
   { label: 'Activity', href: '/activity', icon: Zap, badge: 3 },
 ];
@@ -62,7 +63,7 @@ export default function Sidebar() {
       </nav>
 
       <div className={styles.footer}>
-        <div className={styles.footerInfo}>v0.1.0 · Node v22</div>
+        <div className={styles.footerInfo}>v0.2.0 · Node v22</div>
       </div>
     </aside>
   );

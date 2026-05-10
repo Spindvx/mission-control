@@ -1,0 +1,132 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  height: calc(100vh - var(--topnav-height) - 120px);
+  min-height: 500px;
+}
+
+@media (max-width: 1100px) {
+  .board {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .board {
+    grid-template-columns: 1fr;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.columnHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+}
+
+.columnTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.columnDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.columnCount {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--bg-elevated);
+  color: var(--text-tertiary);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.columnBody {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.columnBody.dragOver {
+  background: rgba(79, 124, 247, 0.03);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.emptyIcon {
+  width: 40px;
+  height: 40px;
+  background: var(--bg-elevated);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.emptyText {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+/* Add task button */
+.addTaskBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  margin: 4px 12px 12px;
+  background: var(--bg-elevated);
+  border: 1px dashed var(--border-default);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all 150ms var(--ease-out);
+}
+
+.addTaskBtn:hover {
+  background: var(--bg-overlay);
+  color: var(--text-secondary);
+  border-color: var(--text-tertiary);
+}
+
+.addTaskBtn svg {
+  width: 14px;
+  height: 14px;
+}

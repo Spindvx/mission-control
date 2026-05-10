@@ -1,3 +1,16 @@
+// Types shared across the application
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: 'backlog' | 'in_progress' | 'in_review' | 'done';
+  assignee: 'josh' | 'sable' | 'both';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Tool {
   id: string;
   name: string;
@@ -17,14 +30,6 @@ export interface ActivityEvent {
   status?: 'success' | 'warning' | 'error' | 'info';
 }
 
-export interface StatData {
-  label: string;
-  value: string | number;
-  delta?: number;
-  deltaLabel?: string;
-  status?: 'normal' | 'warning' | 'critical';
-}
-
 export interface ServiceStatus {
   name: string;
   status: 'online' | 'degraded' | 'offline';
@@ -38,3 +43,10 @@ export type NavItem = {
   icon: string;
   badge?: number;
 };
+
+export const TASK_COLUMNS = [
+  { id: 'backlog', label: 'Backlog', color: 'var(--text-tertiary)' },
+  { id: 'in_progress', label: 'In Progress', color: 'var(--accent-blue)' },
+  { id: 'in_review', label: 'In Review', color: 'var(--accent-violet)' },
+  { id: 'done', label: 'Done', color: 'var(--accent-green)' },
+] as const;

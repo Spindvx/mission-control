@@ -1,4 +1,4 @@
-import { Tool, ActivityEvent, ServiceStatus } from './types';
+import type { Tool, ActivityEvent, ServiceStatus } from './types';
 
 export const mockTools: Tool[] = [
   {
